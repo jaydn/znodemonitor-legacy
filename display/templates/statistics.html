@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-md-4">
+            <div class="card bg-secondary text-white mb-4">
+                <div class="card-header">
+                    <strong>Version</strong>
+                </div>
+                <div class="card-body">{{ version }}</div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <div class="card bg-secondary text-white mb-4">
+                <div class="card-header">
+                    <strong>Block Height</strong>
+                </div>
+                <div class="card-body">{{ height }}</div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <div class="card bg-secondary text-white mb-4">
+                <div class="card-header">
+                    <strong>Total Nodes</strong>
+                </div>
+                <div class="card-body">{{ nodes }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card bg-secondary text-white mb-4" style="overflow: auto;">
+                <table class="table table-dark text-white" id="count-tbl">
+                    <thead>
+                        <th>Status</th>
+                        <th>Count</th>
+                    </thead>
+                    <tbody>
+                        {% for k,v in states.items() %}
+                        <tr>
+                            <td>{{ k }}</td>
+                            <td>{{ v }}</td>        
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$(document).ready(function(){
+    $('#count-tbl').DataTable({'paging': false, 'info': false, 'filter': false, 'responsive': true,});
+});
+</script>
+{% endblock %}

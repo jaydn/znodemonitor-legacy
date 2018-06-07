@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            {% if issues %}                                                                                                            
+            <div class="alert alert-warning">                                                                                          
+                <p>                                               
+                    <strong>Issues</strong>                                                                    
+                    <br>      
+                    <br>                        
+                    <ul>                                                    
+                        {% for issue in issues %}                                                                
+                        <li>{{issue}}</li>
+                        {% endfor %}    
+                    </ul>                       
+                </p>                                                 
+            </div>                                                                                           
+            {% endif %}
+	        <div class="card bg-secondary text-white">
+                <div class="card-header">
+                    <strong>Settings for {{ row.email }}</strong>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="form-group">
+                            <label for="cooldown">Cooldown</label>
+                            <input type="number" class="form-control" id="cooldown" name="cooldown" min="0" max="86400" value="{{row.email_cooldown}}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="timezone">Timezone</label><br>
+                            <select style="width:100%;" id="timezone" name="timezone" required>
+                                {% for tz in timezones %}
+                                <option {% if tz == row.timezone %}selected {%endif%}value="{{tz}}">{{tz}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-default">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$(document).ready(function(){
+        $('#overviewtab').DataTable({'paging': false, 'info': false, 'filter': false, 'responsive': true,});
+});
+</script>
+{% endblock %}

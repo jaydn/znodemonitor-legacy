@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    {% if issues %}
+    <div class="alert alert-warning">
+        <p>
+            <strong>Issues</strong>
+            <br>
+            <br>
+            <ul>
+                {% for issue in issues %}
+                <li>{{issue}}</li>
+                {% endfor %}
+            </ul>
+        </p>
+    </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card bg-secondary text-white">
+                <div class="card-header">
+                    <strong>Add</strong>
+                </div>
+                <div class="card-body">
+                    <p>Your nodes to be watched go in here. You can enter multiple nodes in this box, newline separated.</p>
+                    <form method="POST">
+                        <div class="form-group">
+                            <label for="nodes">Format: LABEL TXID TXINDEX</label>
+                            <textarea class="form-control" id="nodes" name="nodes" placeholder="znode01 08e9e08bd050e337254d7bb056896b35dde1b0f44b24140443fc6788cfc1ec50 1" rows=10 required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-default"><span class="fa fa-plus"></span> Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

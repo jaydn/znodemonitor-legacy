@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dataTables.bootstrap4.min.css') }}">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dataTables.bootstrap4.min.js') }}"></script>
+    <title>znodemonitor ({{ config['config_name'] }})</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <a class="navbar-brand" href="/">
+            <img src="{{ url_for('static', filename='img/zcoin.svg') }}" height="30" class="d-inline-block align-top" alt=""></img>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                {% if session['UserID'] %}
+                    {% include "nav/auth-navbar.html" %}
+                {% else %}
+                    {% include "nav/unauth-navbar.html" %}
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    {% block body %}{% endblock %}
+    {% if config['show_dev_credit'] %}
+    <footer class="footer mt-4">
+		<div class="container">
+            <p class="text-muted">Funded by <a href="https://www.pdabase.com.my/pages/zcoin-znode-hosting">pdabase</a>.</p>
+            <p class="text-muted">Built by <a href="http://jaydncunningham.com/">Jaydn Cunningham</a> 2018</p>
+		</div>
+    </footer>
+    {% endif %}
+</body>
+
+</html>

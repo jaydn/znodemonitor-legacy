@@ -1,0 +1,53 @@
+{% extends "base.html" %} {% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            {% if config['enforce_invite'] %}
+            <div class="alert alert-info">This is not a public instance. Please go to <a class="text-primary" href="https://znodemonitor.com/register">znodemonitor.com</a> if you were not directed here explicitly.</div>
+            {% endif %}
+            {% if issues %}
+            <div class="alert alert-warning">
+                <p>
+                    <strong>Issues</strong>
+                    <br>
+                    <br>
+                    <ul>
+                        {% for issue in issues %}
+                        <li>{{issue}}</li>
+                        {% endfor %}
+                    </ul>
+                </p>
+            </div>
+            {% endif %}
+            <div class="card bg-secondary text-white">
+                <div class="card-header">
+                    <strong>Register</strong>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="form-group">
+                            <label for="emailaddr">Email Address</label>
+                            <input type="email" class="form-control" id="emailaddr" name="emailaddr" placeholder="email@domain.tld" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="passwordv">Password (Verify)</label>
+                            <input type="password" class="form-control" id="passwordv" name="passwordv" required>
+                        </div>
+                        {% if config['enforce_invite'] %}
+                        <div class="form-group">
+                            <label for="invitekey">Invite Key</label>
+                            <input type="text" class="form-control" id="invitekey" name="invitekey" required>
+                        </div>
+                        {% endif %}
+                        <button type="submit" class="btn btn-default">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

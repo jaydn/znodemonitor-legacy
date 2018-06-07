@@ -1,0 +1,69 @@
+{% macro colour_status(perc) %}
+{% if perc=='ENABLED' %}
+<span class="text-success">{{perc}}</span>
+{% else %}
+<span class="text-danger">{{perc}}</span>
+{% endif %}
+{% endmacro %}
+
+{% extends "base.html" %}
+{% block body %}
+<script>
+var to_delete = [];
+function mass_del() {
+    $.ajax(
+        {
+            'type': 'POST',
+            'url': '/api/remove',
+            'data': {'nodes': to_delete.join(),}
+        }
+    ).done(()=>{location.reload();});
+}
+function del_add(nid) {
+    if(document.getElementById("node-"+nid).checked) {
+        to_delete.push(nid);
+    } else {
+        to_delete = to_delete.filter(function(e) { return e != nid })
+    }
+}
+</script>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+        <button class="btn btn-primary mb-4" onclick=mass_del()>Delete selected</button>
+            <div class="card bg-secondary text-white" style="overflow:auto;">
+                <div class="card-header">
+                    <strong>Node State</strong>
+                </div>
+                <table class="table table-dark text-white" id="remove-tbl">
+                    <thead class="text-center">
+                        <tr>
+                            <th>Label</th>
+                            <th>Status</th>
+                            <th>IP Address</th>
+                            <th>Last Paid</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for node in nodes %}
+                        <tr>
+                            <td><a href="{{ url_for('node', nid=node.id) }}">{{ node.label }}</a></td>
+                            <td>{{ colour_status(node.node_status) }}</td>
+                            <td>{{node.node_ip}}</td>
+                            <td>{{node.node_last_paid_time}}</td>
+                            <td><input type="checkbox" id="node-{{node.id}}" onclick=del_add({{node.id}}) autocomplete="off"></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$(document).ready(function(){
+        $('#remove-tbl').DataTable({'paging': false, 'info': false, 'filter': false, 'responsive': true,});
+});
+</script>
+{% endblock %}

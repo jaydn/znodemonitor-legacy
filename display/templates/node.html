@@ -1,0 +1,68 @@
+{% macro colour_status(perc) %}
+{% if perc=='ENABLED' %}
+<span class="text-success">{{perc}}</span>
+{% else %}
+<span class="text-danger">{{perc}}</span>
+{% endif %}
+{% endmacro %}
+
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card bg-secondary text-white">
+                <div class="card-header">
+                    <strong>Node</strong>
+                </div>
+                <div class="card-body" style="overflow: auto;">
+                    <table class="table table-dark text-white">
+                        <tbody>
+                            <tr>
+                                <th>Label</th>
+                                <td>{{node.label}}</td>
+                            </tr>
+                            <tr>
+                                <th>TXID</th>
+                                <td>{{node.txid}}</td>
+                            </tr>
+                            <tr>
+                                <th>Status</th>
+                                <td>{{colour_status(node.node_status)}}</td>
+                            </tr>
+                            <tr>
+                                <th>Protocol</th>
+                                <td>{{node.node_protocol}}</td>
+                            </tr>
+                            <tr>
+                                <th>Payee</th>
+                                <td>{{node.node_payee}}</td>
+                            </tr>
+                            <tr>
+                                <th>Last Seen</th>
+                                <td>{{node.node_last_seen | tz_localize}}</td>
+                            </tr>
+                            <tr>
+                                <th>Active</th>
+                                <td>{{node.node_active_seconds | secs_humanize}}</td>
+                            </tr>
+                            <tr>
+                                <th>Last Paid Time</th>
+                                <td>{{node.node_last_paid_time}}</td>
+                            </tr>
+                            <tr>
+                                <th>Last Paid Block</th>
+                                <td>{{node.node_last_paid_block}}</td>
+                            </tr>
+                            <tr>
+                                <th>IP</th>
+                                <td>{{node.node_ip}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %} {% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            {% if issues %}
+            <div class="alert alert-warning">
+                <p>
+                    <strong>Issues</strong>
+                    <br>
+                    <br>
+                    <ul>
+                        {% for issue in issues %}
+                        <li>{{issue}}</li>
+                        {% endfor %}
+                    </ul>
+                </p>
+            </div>
+            {% endif %}
+            <div class="card bg-secondary text-white">
+                <div class="card-header">
+                    <strong>Password reset for {{email}}</strong>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="passwordv">Password (Verify)</label>
+                            <input type="password" class="form-control" id="passwordv" name="passwordv" required>
+                        </div>
+                        <button type="submit" class="btn btn-default">Reset</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
