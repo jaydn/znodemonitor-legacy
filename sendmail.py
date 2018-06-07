@@ -1,9 +1,11 @@
-from models import User
-from znconfig import config
 import requests
 import time
-import os
 import html
+import os
+
+from models import User
+from znconfig import config
+
 
 def send_alert(node, old):
     ut = int(time.time())

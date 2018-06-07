@@ -1,5 +1,5 @@
-import peewee
 from znconfig import config
+import peewee
 
 db = peewee.MySQLDatabase(config['database_name'], **config['database_kvargs'])
 
