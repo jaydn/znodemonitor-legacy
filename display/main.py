@@ -15,7 +15,7 @@ import re
 from random import SystemRandom
 sys.path.append(os.path.abspath('..'))
 print(os.path.abspath('..'))
-from sendshit import send_pw_rst
+from sendmail import send_pw_rst
 from models import User, Node, db
 from znconfig import config
 

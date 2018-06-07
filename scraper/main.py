@@ -2,7 +2,7 @@ import os
 import sys
 sys.path.append(os.path.abspath('..'))
 print(os.path.abspath('..'))
-from sendshit import send_alert
+from sendmail import send_alert
 from models import User, Node
 from znconfig import config
 import subprocess
