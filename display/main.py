@@ -1,20 +1,20 @@
 from validate_email import validate_email
+from random import SystemRandom
 import dateutil.relativedelta
-import json
-import functools
-import os
-import pytz
-import subprocess
-import sys
 import playhouse.shortcuts
-import uuid
 import werkzeug.security
+import subprocess
+import functools
 import string
 import flask
+import json
+import pytz
+import uuid
+import sys
+import os
 import re
-from random import SystemRandom
+
 sys.path.append(os.path.abspath('..'))
-print(os.path.abspath('..'))
 from sendmail import send_pw_rst
 from models import User, Node, db
 from znconfig import config

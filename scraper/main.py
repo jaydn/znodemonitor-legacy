@@ -1,16 +1,16 @@
-import os
-import sys
-sys.path.append(os.path.abspath('..'))
-print(os.path.abspath('..'))
-from sendmail import send_alert
-from models import User, Node
-from znconfig import config
 import subprocess
 import datetime
 import pymysql
 import shlex
 import json
 import time
+import sys
+import os
+
+sys.path.append(os.path.abspath('..'))
+from sendmail import send_alert
+from models import User, Node
+from znconfig import config
 
 NODE_STATUS = 0
 NODE_PROTOCOL = 1
