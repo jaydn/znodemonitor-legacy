@@ -9,6 +9,7 @@ import string
 import flask
 import json
 import pytz
+import time
 import uuid
 import sys
 import os
@@ -189,13 +190,22 @@ def forgot():
     else:
         if {'emailaddr'} != set(flask.request.form):
             return flask.render_template('forgot.html', issues=['Please submit a valid form.'])
+
         try:
             u = User.select().where((User.email == flask.request.form['emailaddr']))[0]
         except:
             return flask.render_template('forgot.html', issues=['Email not found.'])
+
+        ut = int(time.time())
+
+        if u.reset_last + 3600 >= ut:
+            return flask.render_template('forgot.html', issues=['Please wait before requesting another password reset.'])
+
         secrand = SystemRandom()
         u.reset_token = str(''.join(secrand.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(255)))
+        u.reset_last = ut
         u.save()
+
         send_pw_rst(u.email, u.reset_token)
         return flask.redirect(flask.url_for('index'))
 

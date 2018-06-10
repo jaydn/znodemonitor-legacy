@@ -11,6 +11,7 @@ class User(BaseModel):
     email = peewee.CharField(unique=True, null=False)
     passwordhash = peewee.CharField(null=False)
     reset_token = peewee.TextField(null=True)
+    reset_last = peewee.IntegerField(null=False, default=0)
     email_cooldown = peewee.IntegerField(null=False, default=300)
     email_last = peewee.IntegerField(null=False, default=0)
     timezone = peewee.TextField(null=False, default='UTC')
