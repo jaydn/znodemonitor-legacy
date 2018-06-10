@@ -214,12 +214,8 @@ def forgot():
 @access_only('unauth')
 def login():
     if flask.request.method == 'POST':
-        if len(flask.request.form) != 2:
-            return flask.render_template('login.html', issues=['Please submit a valid form.'])
         if {'emailaddr', 'password'} != set(flask.request.form):
             return flask.render_template('login.html', issues=['Please submit a valid form.'])
-        issues = []
-#        u = User.query.filter_by(email=flask.request.form['emailaddr']).first()
         try:
             u = User.select().where((User.email==flask.request.form['emailaddr']))[0]
         except:
@@ -233,7 +229,7 @@ def login():
     elif flask.request.method == 'GET':
         return flask.render_template('login.html')
 
-@app.route('/logout')
+@app.route('/logout', methods=['POST'])
 @access_only('auth')
 def logout():
     flask.session.pop('UserID', None)
@@ -243,7 +239,7 @@ def logout():
 def without_keys(d, *keys):
     return dict(filter(lambda key_value: key_value[0] not in keys, d.items()))
 
-@app.route('/api/get_nodes')
+@app.route('/api/get_nodes', methods=['GET'])
 def api_get_nodes():
     if 'UserID' not in flask.session:
         return flask.abort(404)
@@ -252,7 +248,7 @@ def api_get_nodes():
 
     return json.dumps(json_this, default=str)
 
-@app.route('/overview')
+@app.route('/overview', methods=['GET'])
 @access_only('auth')
 def overview():
     nodelist = Node.select().where((Node.user == flask.session['UserID']))
@@ -294,7 +290,7 @@ def settings():
         
         return flask.render_template('settings.html', row=user, timezones=pytz.all_timezones)
 
-@app.route('/node/<int:nid>')
+@app.route('/node/<int:nid>', methods=['GET'])
 @access_only('auth')
 def node(nid):
     try:
@@ -321,7 +317,7 @@ def add():
 
     if flask.request.method == 'GET':
         return flask.render_template('add.html')
-    else:
+    elif flask.request.method == 'POST':
         if {'nodes'} != set(flask.request.form):
             return flask.render_template('add.html', issues=['Did not receive a list. Malformed?'])
         
