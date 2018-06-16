@@ -99,7 +99,6 @@ def statistics():
 
     state_count = {}
     for k,v in obj.items():
-        print(k, v)
         state_count[v] = state_count.get(v, 0) + 1
 
     return flask.render_template('statistics.html', version=version, height=height, nodes=nodes, states=state_count)
@@ -301,10 +300,8 @@ def node(nid):
 
 def add_node(user, lbl, txid, idx):
     if len(user.nodes) >= config['limit'] and config['enforce_limit']:
-        print('past limit')
         return
     n = Node.create(user=user, label=lbl, txid=(txid + ', ' + idx))
-    print(n.id)
     
 @app.route('/add', methods=['GET', 'POST'])
 def add():
@@ -321,12 +318,9 @@ def add():
         if {'nodes'} != set(flask.request.form):
             return flask.render_template('add.html', issues=['Did not receive a list. Malformed?'])
         
-        print(flask.request.form['nodes'])
         u = User.select().where((User.id==flask.session['UserID']))[0]
-        print(u.email)
 
         to_add = [k.strip('\r\n ') for k in flask.request.form['nodes'].split('\n')]
-        print(to_add)
         issues = []
         
         for line in to_add:
@@ -340,11 +334,8 @@ def add():
                 txid = ret.group(2)
                 index = ret.group(3)
             except:
-                print('failed parse')
                 continue
 
-            print(lbl, txid, index)
-            
             try:
                 add_node(u, lbl, txid, index)
             except:
@@ -365,7 +356,6 @@ def bremove():
         nodes = [int(k) for k in flask.request.form['nodes'].split(',')]
     except:
         return flask.abort(404)
-    print(nodes)
     for node in nodes:
         try:
             node_obj = Node.select().join(User).where((Node.id==node) & (User.id == flask.session['UserID']))[0]
