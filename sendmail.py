@@ -56,26 +56,26 @@ def send_alert(node, old):
 
 
 def send_pw_rst(email, token):
-        htmlx = """\
-        <html>
-        <head>
-        </head>
-        <body>
-        <h1>{2} password reset</h1>
-        <p><a href="https://{2}/forgot/{0}/{1}">https://{2}/forgot/{0}/{1}</a></p>
-        </body>
-        </html>
-        """.format(email, token, config['domain'])
+    htmlx = """\
+    <html>
+    <head>
+    </head>
+    <body>
+    <h1>{2} password reset</h1>
+    <p><a href="https://{2}/forgot/{0}/{1}">https://{2}/forgot/{0}/{1}</a></p>
+    </body>
+    </html>
+    """.format(email, token, config['domain'])
 
-        r = requests.post('https://api.mailgun.net/v3/'+config['mailgun_domain']+'/messages',
-                data={
-                    'from': 'noreply@'+config['mailgun_domain'],
-                    'to': email,
-                    'subject': 'Password Reset',
-                    'html': htmlx
-                    },
-                auth=('api', config['mailgun_key'])
-            )
+    r = requests.post('https://api.mailgun.net/v3/'+config['mailgun_domain']+'/messages',
+            data={
+                'from': 'noreply@'+config['mailgun_domain'],
+                'to': email,
+                'subject': 'Password Reset',
+                'html': htmlx
+                },
+            auth=('api', config['mailgun_key'])
+        )
 
-        print(r.status_code)
-        print(r.text)
+    print(r.status_code)
+    print(r.text)
