@@ -15,6 +15,7 @@ class User(BaseModel):
     email_cooldown = peewee.IntegerField(null=False, default=300)
     email_last = peewee.IntegerField(null=False, default=0)
     timezone = peewee.TextField(null=False, default='UTC')
+    reward_emails = peewee.BooleanField(null=False, default=False)
 
 class Node(BaseModel):
     user = peewee.ForeignKeyField(User, backref='nodes', null=False)

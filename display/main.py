@@ -270,10 +270,13 @@ def settings():
     if flask.request.method == 'GET':
         return flask.render_template('settings.html', row=user, timezones=pytz.all_timezones)
     elif flask.request.method == 'POST':
-        if {'cooldown', 'timezone'} != set(flask.request.form):
+        #not happy about this one
+#        if {'cooldown', 'timezone'} != set(flask.request.form):
+#            return flask.render_template('settings.html', row=user, timezones=pytz.all_timezones, issues=['Please submit a valid form.'])
+
+        if flask.request.form.get('timezone', None) not in pytz.all_timezones:
             return flask.render_template('settings.html', row=user, timezones=pytz.all_timezones, issues=['Please submit a valid form.'])
-        if flask.request.form['timezone'] not in pytz.all_timezones:
-            return flask.render_template('settings.html', row=user, timezones=pytz.all_timezones, issues=['Please submit a valid form.'])
+
         try:
             cooldown = int(flask.request.form['cooldown'])
         except:
@@ -282,9 +285,12 @@ def settings():
         if cooldown < 0 or cooldown > 84600:
             return flask.render_template('settings.html', row=user, timezones=pytz.all_timezones, issues=['Cooldown must be between 0 and 84600.'])
 
+        rewards = bool(flask.request.form.get('rewards', False))
+
         user.email_cooldown = cooldown
         user.email_last = 0
         user.timezone = flask.request.form['timezone']
+        user.reward_emails = rewards
         user.save()
         
         return flask.render_template('settings.html', row=user, timezones=pytz.all_timezones)
