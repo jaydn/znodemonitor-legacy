@@ -80,13 +80,20 @@ def main(should_send_mail):
 
 if __name__ == '__main__':
     send_mail = True
-    if len(sys.argv) == 2:
-        if sys.argv[1] == 'no_send_mail':
+    cron_mode = False
+    for arg in sys.argv:
+        if arg == 'no_send_mail':
             send_mail = False
+        if arg == 'cron_mode':
+            cron_mode = True
+
+
 
     while True:
         print('starting loop' + str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y-%m-%d %H:%M:%S')))
         main(send_mail)
         print('ending loop' + str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y-%m-%d %H:%M:%S')))
+        if cron_mode:
+            break
         time.sleep(30)
 
