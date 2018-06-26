@@ -107,8 +107,6 @@ def statistics():
 @access_only('unauth')
 def register():
     if flask.request.method == 'POST':
-        if len(flask.request.form) != (4 if config['enforce_invite'] else 3):
-            return flask.render_template('register.html', issues=['Please submit a valid form.'])
         form_vals = {'emailaddr', 'password', 'passwordv'}
         if config['enforce_invite']:
             form_vals.add('invitekey')
