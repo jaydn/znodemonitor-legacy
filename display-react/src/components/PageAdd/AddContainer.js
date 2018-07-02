@@ -61,7 +61,7 @@ class AddContainer extends Component {
     })
       .then((response) => {
         console.log(response);
-        this.setState({ nodes: [] });
+        this.setState({ nodes: [], shouldRedir: true });
         //return response.ok ? response.json() : {};
       })
       .catch((reason) => {
@@ -73,6 +73,10 @@ class AddContainer extends Component {
   render() {
     if (localStorage.getItem("token") === null) {
       return (<Redirect to='/login' />);
+    }
+
+    if (this.state.shouldRedir) {
+      return (<Redirect to='/overview' />);
     }
 
     var x = [];

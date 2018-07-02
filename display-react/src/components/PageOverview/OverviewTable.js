@@ -24,7 +24,7 @@ class OverviewTable extends Component {
       {
         id: 'lbl',
         Header: 'Label',
-        accessor: d => <Link to={"/node" + d.id}>{d.label}</Link>,
+        accessor: d => <Link to={"/node/" + d.id}>{d.label}</Link>,
       },
       {
         Header: 'Status',
