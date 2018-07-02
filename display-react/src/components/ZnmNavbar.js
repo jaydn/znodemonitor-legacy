@@ -39,9 +39,6 @@ class ZnmNavbar extends Component {
             <NavLink tag={Link} to="/add"><span className="fa fa-plus" /> Add</NavLink>
           </NavItem>
           <NavItem>
-            <NavLink tag={Link} to="/remove"><span className="fa fa-trash" /> Remove</NavLink>
-          </NavItem>
-          <NavItem>
             <NavLink tag={Link} to="/settings"><span className="fa fa-cog" /> Settings</NavLink>
           </NavItem>
           <NavItem>
