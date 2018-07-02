@@ -58,7 +58,7 @@ class SettingsContainer extends Component {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + this.props.userInfo.token,
-        'Content-Type': 'application/json',
+        //'Content-Type': 'application/json',
       },
       body: formData,
     })

@@ -16,8 +16,17 @@ class OverviewContainer extends Component {
     this.updateTableData = this.updateTableData.bind(this);
   }
 
-  deleteNode(uid) {
-
+  deleteNode(tkn, uid) {
+    fetch('http://do-debian-sgp1-01.jaydncunningham.com:5000/delete', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + tkn,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify([uid]),
+    }).then((response) => {
+      console.log(response);
+    })
   }
 
   componentDidMount() {
@@ -81,6 +90,7 @@ class OverviewContainer extends Component {
 
     var table = this.state.nodes.length !== 0 ?
       <OverviewTable deleteNode={this.deleteNode}
+        userInfo={this.props.userInfo}
         updateTableData={this.updateTableData}
         nodes={this.state.nodes} /> :
       (this.state.nodesFetched ?

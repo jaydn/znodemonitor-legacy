@@ -7,6 +7,7 @@ import LoginContainer from './components/PageLogin';
 import RegisterContainer from './components/PageRegister';
 import SettingsContainer from './components/PageSettings/SettingsContainer';
 import AddContainer from './components/PageAdd/AddContainer';
+import NodeContainer from './components/PageNode/NodeContainer';
 import NoMatch from './components/Errors';
 
 import './bootstrap.min.css';
@@ -67,8 +68,8 @@ class App extends Component {
         <Route exact path='/settings' render={()=><SettingsContainer userInfo={this.state.userInfo}/>} />
         <Route exact path='/login' render={()=><LoginContainer setToken={this.setToken} />} />
         <Route exact path='/register' render={()=><RegisterContainer setToken={this.setToken} />} />
+        <Route exact path='/node/:id' component={NodeContainer} />
         <Route component={NoMatch} />
-          {/*<Route path='/node/:nid' component={Node}/>*/}
         </Switch>
       </div>
     );

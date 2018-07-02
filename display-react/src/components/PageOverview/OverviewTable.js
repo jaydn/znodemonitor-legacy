@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 //import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 import { Card, CardBody, CardHeader, Button } from 'reactstrap';
-//import { Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import ReactTable from 'react-table';
 
 class OverviewTable extends Component {
@@ -22,8 +22,9 @@ class OverviewTable extends Component {
   render() {
     var columns = [
       {
+        id: 'lbl',
         Header: 'Label',
-        accessor: 'label',
+        accessor: d => <Link to={"/node" + d.id}>{d.label}</Link>,
       },
       {
         Header: 'Status',
@@ -49,7 +50,7 @@ class OverviewTable extends Component {
       columns.push({
         id: 'delete_button',
         Header: 'Delete',
-        accessor: d => <Button className="btn-sm" color="danger" onClick={() => { this.props.deleteNode(d.id); this.props.updateTableData(); }}><span className="fa fa-trash" /></Button>,
+        accessor: d => <Button className="btn-sm" color="danger" onClick={() => { this.props.deleteNode(this.props.userInfo.token, d.id); this.props.updateTableData(); }}>{d.id}<span className="fa fa-trash" /></Button>,
       });
     }
 
