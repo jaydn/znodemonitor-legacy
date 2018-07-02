@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 //import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 import { Container, Row, Col, Card, CardBody, Input, Button, ListGroup, ListGroupItem } from 'reactstrap';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
+import ListAdd from './ListAdd';
+import BulkAdd from './BulkAdd';
 
 var dflt = {
   label: '',
@@ -15,8 +17,10 @@ class AddContainer extends Component {
     this.state = {
       nodes: [Object.assign({}, dflt)],
       shouldRedir: false,
+      entryStyle: false,
     }
     this.addNode = this.addNode.bind(this);
+    this.toggleEntryStyle = this.toggleEntryStyle.bind(this);
     //this.submitNodes = this.submitNodes.bind(this);
   }
 
@@ -70,6 +74,12 @@ class AddContainer extends Component {
       })
   }
 
+  toggleEntryStyle() {
+    this.setState({
+      entryStyle: !this.state.entryStyle,
+    });
+  }
+
   render() {
     if (localStorage.getItem("token") === null) {
       return (<Redirect to='/login' />);
@@ -79,28 +89,7 @@ class AddContainer extends Component {
       return (<Redirect to='/overview' />);
     }
 
-    var x = [];
-
-    this.state.nodes.forEach((row, idx) => {
-      x.push(
-        <ListGroupItem color="secondary">
-          <Row>
-            <Col xs={12} md={3} className="mb-2">
-              <Input type="text" minLength={1} maxLength={32} name="label" onChange={this.handleInputChange.bind(this, idx)} value={this.state.nodes[idx].label} placeholder="label" />
-            </Col>
-            <Col xs={12} md={6} className="mb-2">
-              <Input type="text" minLength={64} maxLength={64} name="txid" onChange={this.handleInputChange.bind(this, idx)} value={this.state.nodes[idx].txid} placeholder="08e9e08bd050e337254d7bb056896b35dde1b0f44b24140443fc6788cfc1ec50" />
-            </Col>
-            <Col xs={12} md={2} className="mb-2">
-              <Input type="number" name="idx" onChange={this.handleInputChange.bind(this, idx)} value={this.state.nodes[idx].idx} />
-            </Col>
-            <Col xs={1}>
-              <Button color="danger" onClick={this.removeNode.bind(this, idx)}>x</Button>
-            </Col>
-          </Row>
-        </ListGroupItem>
-      );
-    });
+    var x = this.state.entryStyle ? <BulkAdd /> : <ListAdd />;
 
     return (
       <Container>
@@ -108,17 +97,12 @@ class AddContainer extends Component {
           <Col xs={12}>
             <Card color="primary">
               <CardBody>
-                <Row className="mb-4">
+                {x}
+                <Row>
                   <Col xs={3} md={1}>
-                    <Button onClick={this.addNode}><span className="fa fa-plus" /></Button>
-                  </Col>
-                  <Col xs={3} md={1}>
-                    <Button onClick={this.submitNodes.bind(this)}>Submit</Button>
+                    <Button onClick={this.toggleEntryStyle}>{this.state.entryStyle ? 'List' : 'Bulk'}</Button>
                   </Col>
                 </Row>
-                <ListGroup>
-                  {x}
-                </ListGroup>
               </CardBody>
             </Card>
           </Col>
