@@ -41,12 +41,7 @@ def jwt_auth(args):
 
 
 class Register(flask_restful.Resource):
-    register_args = {
-        'email': fields.Str(required=True, validate=validate.Length(min=3, max=256)),
-        'password': fields.Str(required=True, validate=validate.Length(min=12, max=256)),
-    }
-
-    @use_args(register_args)
+    @use_args(auth_args)
     def post(self, args):
         passhash = generate_password_hash(args['password'], method='pbkdf2:sha256')
         u = User.create(email=args['email'], passwordhash=passhash, email_cooldown=300)
