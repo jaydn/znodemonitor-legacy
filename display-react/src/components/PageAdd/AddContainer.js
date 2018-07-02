@@ -21,7 +21,14 @@ class AddContainer extends Component {
     }
     this.addNode = this.addNode.bind(this);
     this.toggleEntryStyle = this.toggleEntryStyle.bind(this);
+    this.setRedirect = this.setRedirect.bind(this);
     //this.submitNodes = this.submitNodes.bind(this);
+  }
+
+  setRedirect() {
+    this.setState({
+      shouldRedir: true,
+    });
   }
 
   handleInputChange(uid, event) {
@@ -89,7 +96,7 @@ class AddContainer extends Component {
       return (<Redirect to='/overview' />);
     }
 
-    var x = this.state.entryStyle ? <BulkAdd /> : <ListAdd />;
+    var x = this.state.entryStyle ? <BulkAdd setRedirect={this.setRedirect} /> : <ListAdd setRedirect={this.setRedirect} />;
 
     return (
       <Container>

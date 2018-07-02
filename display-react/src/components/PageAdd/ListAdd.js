@@ -60,7 +60,7 @@ class ListAdd extends Component {
             .then((response) => {
                 console.log(response);
                 //this.setState({ nodes: [], shouldRedir: true });
-                // this.props.setRedirect();
+                this.props.setRedirect();
 
                 //return response.ok ? response.json() : {};
             })

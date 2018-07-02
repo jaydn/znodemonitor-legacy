@@ -49,16 +49,55 @@ class BulkAdd extends Component {
       if (!txid.match('^[a-z0-9]{64}$')) {
         issues.push(<p>{'Row #' + idx + ' txid invalid'}</p>);
       }
-      if (!nidx.match('^\d+$')) {
+      if (parseInt(nidx) === NaN) {
+        console.log(nidx);
         issues.push(<p>{'Row #' + idx + ' index invalid'}</p>);
       }
-
     });
 
     if (issues.length !== 0) {
       this.setState({ alert: issues });
       return;
     }
+
+    var nds = [];
+
+    this.state.nodes.split('\n').forEach((row, idx) => {
+      if (row === "") {
+        return;
+      }
+      var spl = row.split(' ');
+      let [lbl, txid, nidx] = spl;
+      nds.push({
+        label: lbl,
+        txid: txid,
+        idx: nidx,
+      });
+    });
+
+    console.log(nds);
+
+    fetch('http://do-debian-sgp1-01.jaydncunningham.com:5000/nodes', {
+      method: 'POST',
+      headers: {
+        //TODO fix this BS
+        'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(nds),
+    })
+      .then((response) => {
+        console.log(response);
+        //this.setState({ nodes: [], shouldRedir: true });
+        this.props.setRedirect();
+
+        //return response.ok ? response.json() : {};
+      })
+      .catch((reason) => {
+        console.log(reason);
+        //this.setState({ alert: reason.message });
+      })
+
     /*console.log(this.props);
     e.preventDefault();
     console.log(this.state.nodes);
