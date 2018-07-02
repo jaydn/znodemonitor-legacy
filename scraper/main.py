@@ -95,5 +95,5 @@ if __name__ == '__main__':
         print('ending loop' + str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y-%m-%d %H:%M:%S')))
         if cron_mode:
             break
-        time.sleep(30)
+#        time.sleep(30)
 
