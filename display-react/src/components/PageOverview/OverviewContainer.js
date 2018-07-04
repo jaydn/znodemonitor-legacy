@@ -95,7 +95,7 @@ class OverviewContainer extends Component {
         updateTableData={this.updateTableData}
         nodes={this.state.nodes} /> :
       (this.state.nodesFetched ?
-        <p>No nodes on your account.</p>
+        <Redirect to='/add'/>
         : <p>Loading...</p>);
 
     return (
