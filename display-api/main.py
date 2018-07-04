@@ -1,4 +1,6 @@
 import time
+import json
+import subprocess
 import re
 import flask
 import flask_restful
@@ -40,9 +42,48 @@ def jwt_auth(args):
     return flask.jsonify({'msg': 'Invalid email or password.'})
 
 
+@app.route('/statistics', methods=['GET'])
+def stats():
+    try:
+        obj = json.loads(subprocess.check_output([config['zcoincli_binary'], 'getinfo']).decode())
+    except:
+        pass
+
+    version = obj.get('version', None)
+    height = obj.get('blocks', None)
+
+    try:
+        obj = json.loads(subprocess.check_output([config['zcoincli_binary'], 'znodelist']).decode())
+    except:
+        pass
+
+    nodes = len(obj)
+
+    state_count = {}
+    for k,v in obj.items():
+        state_count[v] = state_count.get(v, 0) + 1
+    
+    return flask.jsonify({'version': version, 'height': height, 'nodes': nodes, 'state_count': state_count})
+
+
+@app.route('/info/register', methods=['GET'])
+def info_register():
+    return flask.jsonify({
+        'inviteRequired': config['enforce_invite']
+        })
+
 class Register(flask_restful.Resource):
-    @use_args(auth_args)
+    reg_args = {
+        'invkey': fields.Str(),
+        'email': fields.Str(required=True, validate=validate.Length(min=2, max=256)),
+        'password': fields.Str(required=True, validate=validate.Length(min=12, max=256)),
+    }
+
+    @use_args(reg_args)
     def post(self, args):
+        if config['enforce_invite']:
+            if args.get('invkey', None) != config['invite']:
+                return {'msg': 'Invalid invite key.'}
         passhash = generate_password_hash(args['password'], method='pbkdf2:sha256')
         u = User.create(email=args['email'], passwordhash=passhash, email_cooldown=300)
         return {'token': flask_jwt_extended.create_access_token(identity=u.id, expires_delta=False)}
@@ -150,7 +191,7 @@ class Nodes(flask_restful.Resource):
                 idx = int(idx)
                 if idx < 0:
                     continue
-                if idx > 10000:
+                if idx > 9999:
                     continue
 
                 add_node(u, lbl, txid, idx)
