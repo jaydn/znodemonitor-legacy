@@ -18,7 +18,7 @@ from models import User, Node, db
 from znconfig import config
 
 app = flask.Flask(__name__)
-app.config['SECRET_KEY'] = '123875213865'
+app.config['SECRET_KEY'] = config['secret']
 flask_cors.CORS(app)
 api = flask_restful.Api(app)
 jwt = flask_jwt_extended.JWTManager(app)
