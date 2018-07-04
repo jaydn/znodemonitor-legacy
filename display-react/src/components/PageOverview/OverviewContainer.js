@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom';
 import OverviewTable from './OverviewTable';
 import { EnabledCard, AttentionCard } from './OverviewCards';
 //import Overview
+import { ApiLocation } from '../../Config';
 
 class OverviewContainer extends Component {
   constructor(props) {
@@ -17,7 +18,7 @@ class OverviewContainer extends Component {
   }
 
   deleteNode(tkn, uid) {
-    fetch('http://do-debian-sgp1-01.jaydncunningham.com:5000/delete', {
+    fetch(ApiLocation + '/delete', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + tkn,
@@ -39,7 +40,7 @@ class OverviewContainer extends Component {
   }
 
   updateTableData() {
-    fetch('http://do-debian-sgp1-01.jaydncunningham.com:5000/nodes', {
+    fetch(ApiLocation + '/nodes', {
       headers: {
         'Authorization': 'Bearer ' + this.props.userInfo.token,
       }

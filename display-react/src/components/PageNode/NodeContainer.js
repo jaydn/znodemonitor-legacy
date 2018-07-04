@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Container, Row, Col, Card, CardBody } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import NodeDisplay from './NodeDisplay';
+import { ApiLocation } from '../../Config';
 
 class NodeContainer extends Component {
   constructor(props) {
@@ -22,7 +23,7 @@ class NodeContainer extends Component {
 
   populateData() {
     var uid = this.props.match.params.id;
-    fetch('http://do-debian-sgp1-01.jaydncunningham.com:5000/getnode/' + uid,
+    fetch(ApiLocation + '/getnode/' + uid,
       {
         headers: {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),

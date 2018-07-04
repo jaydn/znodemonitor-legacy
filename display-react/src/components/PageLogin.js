@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom';
 //import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 import { Container, Row, Col, Card, CardBody, Alert } from 'reactstrap';
 import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import { ApiLocation } from '../Config';
 //import { Redirect } from 'react-router-dom';
 
 class LoginContainer extends Component {
@@ -41,7 +42,7 @@ class LoginContainer extends Component {
     formData.append('password', this.state.password);
 
 
-    fetch('http://do-debian-sgp1-01.jaydncunningham.com:5000/auth', {
+    fetch(ApiLocation + '/auth', {
       method: 'POST',
       body: formData,
     })

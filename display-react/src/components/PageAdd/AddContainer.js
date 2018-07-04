@@ -4,6 +4,7 @@ import { Container, Row, Col, Card, CardBody, Input, Button, ListGroup, ListGrou
 import { Redirect, Link } from 'react-router-dom';
 import ListAdd from './ListAdd';
 import BulkAdd from './BulkAdd';
+import { ApiLocation } from '../../Config';
 
 var dflt = {
   label: '',
@@ -61,7 +62,7 @@ class AddContainer extends Component {
     e.preventDefault();
     console.log(this.state.nodes);
     console.log(JSON.stringify(this.state.nodes));
-    fetch('http://do-debian-sgp1-01.jaydncunningham.com:5000/nodes', {
+    fetch(ApiLocation + '/nodes', {
       method: 'POST',
       headers: {
         //TODO fix this BS

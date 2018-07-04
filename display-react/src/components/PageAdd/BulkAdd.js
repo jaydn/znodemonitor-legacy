@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 //import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 import { Container, Row, Col, Card, CardBody, Input, Button, FormGroup, Label, Alert } from 'reactstrap';
 import { Redirect, Link } from 'react-router-dom';
+import { ApiLocation } from '../../Config';
 
 class BulkAdd extends Component {
   constructor(props) {
@@ -77,7 +78,7 @@ class BulkAdd extends Component {
 
     console.log(nds);
 
-    fetch('http://do-debian-sgp1-01.jaydncunningham.com:5000/nodes', {
+    fetch(ApiLocation + '/nodes', {
       method: 'POST',
       headers: {
         //TODO fix this BS

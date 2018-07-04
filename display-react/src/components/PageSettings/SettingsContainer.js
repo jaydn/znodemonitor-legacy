@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Container, Row, Col, Card, CardBody } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import { SettingsDisplay } from './SettingsDisplay';
+import { ApiLocation } from '../../Config';
 
 class SettingsContainer extends Component {
   constructor(props) {
@@ -19,7 +20,7 @@ class SettingsContainer extends Component {
   }
 
   updateSettings() {
-    fetch('http://do-debian-sgp1-01.jaydncunningham.com:5000/settings', {
+    fetch(ApiLocation + '/settings', {
       headers: {
         'Authorization': 'Bearer ' + this.props.userInfo.token,
       }
@@ -54,7 +55,7 @@ class SettingsContainer extends Component {
     formData.append('emailReward', this.state.emailReward);
 
 
-    fetch('http://do-debian-sgp1-01.jaydncunningham.com:5000/settings', {
+    fetch(ApiLocation + '/settings', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + this.props.userInfo.token,
