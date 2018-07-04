@@ -3,22 +3,37 @@ import { Redirect } from 'react-router-dom';
 //import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 import { Container, Row, Col, Card, CardBody, Alert } from 'reactstrap';
 import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import { ApiLocation } from '../Config';
 //import { Redirect } from 'react-router-dom';
 
 class RegisterContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      inviteKey: false,
+
       alert: '',
       shouldRedir: false,
 
       email: '',
       password: '',
       passwordv: '',
+      invkey: '',
     }
 
     this.onLogin = this.onLogin.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
+  }
+
+  componentDidMount() {
+    fetch(ApiLocation + '/info/register').then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+    }).then((inpJson) => {
+      console.log(inpJson);
+      this.setState({ inviteKey: inpJson['inviteRequired'] });
+    });
   }
 
 
@@ -40,9 +55,10 @@ class RegisterContainer extends Component {
     var formData = new FormData();
     formData.append('email', this.state.email);
     formData.append('password', this.state.password);
+    formData.append('invkey', this.state.invkey);
 
 
-    fetch('http://do-debian-sgp1-01.jaydncunningham.com:5000/register', {
+    fetch(ApiLocation + '/register', {
       method: 'POST',
       body: formData,
     })
@@ -85,8 +101,15 @@ class RegisterContainer extends Component {
         </Row>
       )
     }
-
+      
     var isReady = (this.state.password === this.state.passwordv) && (this.state.password.length > 0);
+
+    var x = this.state.inviteKey ? (
+      <FormGroup>
+        <Label for="invkey">Invite Key</Label>
+        <Input type="text" name="invkey" id="invkey" value={this.state.invkey} onChange={this.handleInputChange} required />
+      </FormGroup>
+    ) : null;
 
     return (
       <Container>
@@ -97,6 +120,7 @@ class RegisterContainer extends Component {
               {/*<CardHeader><strong>Login</strong></CardHeader>*/}
               <CardBody>
                 <Form onSubmit={this.onLogin}>
+                  {x}
                   <FormGroup>
                     <Label for="email">Email</Label>
                     <Input type="email" minLength={3} maxLength={256} name="email" id="email" value={this.state.email} onChange={this.handleInputChange} placeholder="name@domain.tld" required />
