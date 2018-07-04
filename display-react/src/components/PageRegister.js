@@ -111,7 +111,7 @@ class RegisterContainer extends Component {
       </FormGroup>
     ) : null;
 
-    var y = this.state.inviteKey ? (
+    var y = (this.state.inviteKey && this.state.alert === "") ? (
       <Alert color='info'>
       This is not a public instance. Please go to <a className="text-primary" href="https://znodemonitor.com/">znodemonitor.com</a> if you were not directed here explicitly.
       </Alert>
