@@ -1,0 +1,1 @@
+export const ApiLocation = "http://do-debian-sgp1-01.jaydncunningham.com:5000";
