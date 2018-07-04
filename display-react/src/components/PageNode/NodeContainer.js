@@ -16,11 +16,8 @@ class NodeContainer extends Component {
     this.populateData = this.populateData.bind(this);
   }
 
-  componentWillMount() {
-
-
+  componentDidMount() {
     this.populateData();
-
   }
 
   populateData() {
