@@ -111,11 +111,18 @@ class RegisterContainer extends Component {
       </FormGroup>
     ) : null;
 
+    var y = this.state.inviteKey ? (
+      <Alert color='info'>
+      This is not a public instance. Please go to <a className="text-primary" href="https://znodemonitor.com/">znodemonitor.com</a> if you were not directed here explicitly.
+      </Alert>
+    ) : null;
+
     return (
       <Container>
         {alrt}
         <Row>
           <Col xs={12} md={6}>
+            {y}
             <Card color="primary">
               {/*<CardHeader><strong>Login</strong></CardHeader>*/}
               <CardBody>
