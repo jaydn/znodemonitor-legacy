@@ -48,6 +48,8 @@ class RegisterContainer extends Component {
   }
 
   onLogin(e) {
+    this.setState({alert: ''});
+
     e.preventDefault();
     console.log('onLogin from LoginContainer');
     console.log(this.state.email + ':' + this.state.password);
@@ -101,7 +103,7 @@ class RegisterContainer extends Component {
         </Row>
       )
     }
-      
+
     var isReady = (this.state.password === this.state.passwordv) && (this.state.password.length > 0);
 
     var x = this.state.inviteKey ? (
@@ -113,7 +115,7 @@ class RegisterContainer extends Component {
 
     var y = (this.state.inviteKey && this.state.alert === "") ? (
       <Alert color='info'>
-      This is not a public instance. Please go to <a className="text-primary" href="https://znodemonitor.com/">znodemonitor.com</a> if you were not directed here explicitly.
+        This is not a public instance. Please go to <a className="text-primary" href="https://znodemonitor.com/">znodemonitor.com</a> if you were not directed here explicitly.
       </Alert>
     ) : null;
 
