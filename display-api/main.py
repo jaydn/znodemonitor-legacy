@@ -70,23 +70,30 @@ def stats():
 def info_register():
     return flask.jsonify({
         'inviteRequired': config['enforce_invite']
-        })
+    })
 
-class Register(flask_restful.Resource):
-    reg_args = {
-        'invkey': fields.Str(),
-        'email': fields.Str(required=True, validate=validate.Length(min=2, max=256)),
-        'password': fields.Str(required=True, validate=validate.Length(min=12, max=256)),
-    }
+reg_args = {
+    'invkey': fields.Str(),
+    'email': fields.Str(required=True, validate=validate.Length(min=2, max=256)),
+    'password': fields.Str(required=True, validate=validate.Length(min=12, max=256)),
+}
 
-    @use_args(reg_args)
-    def post(self, args):
-        if config['enforce_invite']:
-            if args.get('invkey', None) != config['invite']:
-                return {'msg': 'Invalid invite key.'}
-        passhash = generate_password_hash(args['password'], method='pbkdf2:sha256')
-        u = User.create(email=args['email'], passwordhash=passhash, email_cooldown=300)
-        return {'token': flask_jwt_extended.create_access_token(identity=u.id, expires_delta=False)}
+@app.route('/register', methods=['POST'])
+@use_args(reg_args)
+def register(args):
+    if config['enforce_invite']:
+        if args.get('invkey', None) != config['invite']:
+            return flask.jsonify({'msg': 'Invalid invite key.'})
+    
+    try:
+        User.select().where((User.email == args['email']))[0]
+        return flask.jsonify({'msg': 'Email in use.'})
+    except:
+        pass
+
+    passhash = generate_password_hash(args['password'], method='pbkdf2:sha256')
+    u = User.create(email=args['email'], passwordhash=passhash, email_cooldown=300)
+    return flask.jsonify({'token': flask_jwt_extended.create_access_token(identity=u.id, expires_delta=False)})
 
 def without_keys(d, *keys):
     return dict(filter(lambda key_value: key_value[0] not in keys, d.items()))
@@ -216,7 +223,6 @@ class NodeDelete(flask_restful.Resource):
             except:
                 continue
 
-api.add_resource(Register, '/register')
 api.add_resource(Nodes, '/nodes')
 api.add_resource(NodeDelete, '/delete') #need to get delete method working
 api.add_resource(Settings, '/settings')
