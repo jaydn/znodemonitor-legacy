@@ -3,7 +3,6 @@ from random import SystemRandom
 import dateutil.relativedelta
 import playhouse.shortcuts
 import werkzeug.security
-import subprocess
 import functools
 import string
 import flask
@@ -19,6 +18,11 @@ sys.path.append(os.path.abspath('..'))
 from sendmail import send_pw_rst
 from models import User, Node, db
 from znconfig import config
+from zcoin import ZCoinAdapter
+
+x = config['node_args']
+z = ZCoinAdapter(x['host'], x['port'], x['user'], x['password'])
+
 
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = config['secret']
@@ -83,7 +87,8 @@ def index():
 #@access_only('auth')
 def statistics():
     try:
-        obj = json.loads(subprocess.check_output([config['zcoincli_binary'], 'getinfo']).decode())
+#        obj = json.loads(subprocess.check_output([config['zcoincli_binary'], 'getinfo']).decode())
+        obj = z.call('getinfo')
     except:
         pass
 
@@ -91,7 +96,8 @@ def statistics():
     height = obj.get('blocks', None)
 
     try:
-        obj = json.loads(subprocess.check_output([config['zcoincli_binary'], 'znodelist']).decode())
+#        obj = json.loads(subprocess.check_output([config['zcoincli_binary'], 'znodelist']).decode())
+        obj = z.call('znodelist')
     except:
         pass
 
