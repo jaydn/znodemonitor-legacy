@@ -11,6 +11,7 @@ sys.path.append(os.path.abspath('..'))
 from sendmail import send_alert
 from models import User, Node
 from znconfig import config
+from zcoin import ZCoinAdapter
 
 NODE_STATUS = 0
 NODE_PROTOCOL = 1
@@ -21,12 +22,18 @@ NODE_LAST_PAID_TIME = 5
 NODE_LAST_PAID_BLOCK = 6
 NODE_IP = 7
 
+x = config['node_args']
+z = ZCoinAdapter(x['host'], x['port'], x['user'], x['password'])
+
 def znode_list():
-    obj = json.loads(subprocess.check_output([config['zcoincli_binary'], 'znode', 'list', 'full']).decode())
+    obj = z.call('znode', 'list', 'full')
+    #obj = json.loads(subprocess.check_output([config['zcoincli_binary'], 'znode', 'list', 'full']).decode())
     return {tx[10:-1]: shlex.split(data) for tx,data in obj.items()}
 
 def is_synced():
-    obj = json.loads(subprocess.check_output([config['zcoincli_binary'], 'znsync', 'status']).decode())
+    obj = z.call('znsync', 'status')
+    print(obj)
+    #obj = json.loads(subprocess.check_output([config['zcoincli_binary'], 'znsync', 'status']).decode())
     return 'AssetID' in obj and obj['AssetID'] == 999
 
 def main(should_send_mail):

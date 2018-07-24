@@ -14,6 +14,12 @@ config = {
         "host": "localhost",
         "port": 3306,
     },
+    "node_args": {
+        "host": "127.0.0.1",
+        "port": 8888,
+        "user": "xxx",
+        "password": "xxx",
+    },
     "show_dev_credit": True,
     "enforce_limit": True,
     "limit": 25,
