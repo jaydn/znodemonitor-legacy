@@ -7,14 +7,20 @@ sys.path.append(os.path.abspath('..'))
 from znconfig import config
 from sendmail import send_reward_alert
 from models import Node
+from zcoin import ZCoinAdapter
+
+x = config['node_args']
+z = ZCoinAdapter(x['host'], x['port'], x['user'], x['password'])
 
 def main():
-    block_count = subprocess.check_output([config['zcoincli_binary'], 'getblockcount']).decode().strip('\r\n')
+#    block_count = subprocess.check_output([config['zcoincli_binary'], 'getblockcount']).decode().strip('\r\n')
+    block_count = z.get_block_count()
 
-    winners = subprocess.check_output([config['zcoincli_binary'], 'znode', 'winners']).decode().strip('\r\n')
-    winners = json.loads(winners)
+ #   winners = subprocess.check_output([config['zcoincli_binary'], 'znode', 'winners']).decode().strip('\r\n')
+ #   winners = json.loads(winners)
+    winners = z.call('znode', 'winners')
 
-    winner = winners[block_count].split(':')[0]
+    winner = winners[str(block_count)].split(':')[0]
 
     print('block #{0} winner {1}'.format(block_count, winner))
 

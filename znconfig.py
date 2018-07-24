@@ -23,7 +23,6 @@ config = {
     "show_dev_credit": True,
     "enforce_limit": True,
     "limit": 25,
-    "zcoincli_binary": "~/zcoin-0.13.6/bin/zcoin-cli",
     "enforce_invite": True,
     "invite": "your_invite_key",
     "mailgun_domain": "znodemonitor.com",
