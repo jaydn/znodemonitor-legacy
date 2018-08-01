@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card bg-secondary text-white mb-4">
+                <div class="card-header">
+                    <strong>Offline</strong>
+                </div>
+                <div class="card-body">
+                    <p>Failed to contact node.</p>
+                    <code>{{ exception_msg }}</code>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$(document).ready(function(){
+    $('#count-tbl').DataTable({'paging': false, 'info': false, 'filter': false, 'responsive': true,});
+});
+</script>
+{% endblock %}

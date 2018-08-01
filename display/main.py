@@ -20,9 +20,7 @@ from models import User, Node, db
 from znconfig import config
 from zcoin import ZCoinAdapter
 
-x = config['node_args']
-z = ZCoinAdapter(x['host'], x['port'], x['user'], x['password'])
-
+z = (lambda x: ZCoinAdapter(x['host'], x['port'], x['user'], x['password']))(config['node_args'])
 
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = config['secret']
@@ -87,19 +85,17 @@ def index():
 #@access_only('auth')
 def statistics():
     try:
-#        obj = json.loads(subprocess.check_output([config['zcoincli_binary'], 'getinfo']).decode())
         obj = z.call('getinfo')
-    except:
-        pass
+    except Exception as e:
+        return flask.render_template('statistics_offline.html', exception_msg=str(e))
 
     version = obj.get('version', None)
     height = obj.get('blocks', None)
 
     try:
-#        obj = json.loads(subprocess.check_output([config['zcoincli_binary'], 'znodelist']).decode())
         obj = z.call('znodelist')
     except:
-        pass
+        return flask.render_template('statistics_offline.html', exception_msg=str(e))
 
     nodes = len(obj)
 
