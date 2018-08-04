@@ -50,7 +50,7 @@
                     <tbody>
                         {% for node in nodes %}
                         <tr>
-                            <td><a href="{{ url_for('node', nid=node.id) }}">{{ node.label }}</a></td>
+                            <td>{% if node.top_ten %}<strong>{% endif %}<a href="{{ url_for('node', nid=node.id) }}">{{ node.label }}</a>{% if node.top_ten %}</strong>{% endif %}</td>
                             <td>{{ colour_status(node.node_status) }}</td>
                             <td>{{node.node_ip}}</td>
                             <td>{{node.node_last_paid_block}}</td>

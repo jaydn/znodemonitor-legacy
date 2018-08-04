@@ -1,3 +1,4 @@
+from werkzeug.contrib.cache import SimpleCache
 from validate_email import validate_email
 from random import SystemRandom
 import dateutil.relativedelta
@@ -21,6 +22,16 @@ from znconfig import config
 from zcoin import ZCoinAdapter
 
 z = (lambda x: ZCoinAdapter(x['host'], x['port'], x['user'], x['password']))(config['node_args'])
+cache = SimpleCache()
+
+def max_last_paid_for_ten_pct():
+    rv = cache.get('max_lastpaid')
+    if rv is None:
+        blocks = z.get_block_count()
+        obj = z.call('znode', 'list', 'lastpaidblock')
+        rv = (blocks - int(len(obj) * 0.9))
+        cache.set('max_lastpaid', rv, timeout=30 * 60)
+    return rv
 
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = config['secret']
@@ -255,11 +266,19 @@ def overview():
     enabled = 0
     attention = 0
 
+    x = max_last_paid_for_ten_pct()
+
     for node in nodelist:
         if node.node_status == 'ENABLED':
             enabled = enabled + 1
+            if node.node_last_paid_block < x:
+#                node.label = '<b>' + node.label + '</b>'
+                node.top_ten = True # TODO: This is gross
         else:
             attention = attention + 1
+
+
+
 
     return flask.render_template('overview.html', nodes=nodelist, enabled=enabled, attention=attention)
 
