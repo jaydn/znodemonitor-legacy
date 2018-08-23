@@ -249,6 +249,20 @@ def logout():
 def without_keys(d, *keys):
     return dict(filter(lambda key_value: key_value[0] not in keys, d.items()))
 
+@app.route('/api/export', methods=['GET'])
+def api_export():
+    if 'UserID' not in flask.session:
+        return flask.abort(404)
+    raw_results = Node.select().join(User).where((User.id==flask.session['UserID']))
+    json_this = [without_keys(playhouse.shortcuts.model_to_dict(n), "user") for n in raw_results]
+    b = ''
+    for x in json_this:
+        b += x['label'] + ' ' + x['txid'].replace(',', '') + '\n'
+
+    return b
+
+
+
 @app.route('/api/get_nodes', methods=['GET'])
 def api_get_nodes():
     if 'UserID' not in flask.session:
