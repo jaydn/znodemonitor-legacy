@@ -8,51 +8,56 @@ from znconfig import config
 
 
 def send_alert(node, old):
-    ut = int(time.time())
-
     try:
-        userobj = User.select().where((User.id == node.user.id))[0]
+        ut = int(time.time())
+
+        try:
+            userobj = User.select().where((User.id == node.user.id))[0]
+        except Exception as e:
+            print(str(e))
+            return
+
+        if userobj.email_last + userobj.email_cooldown >= ut:
+            return
+
+        userobj.email_last = ut
+        userobj.save()
+
+        htmlx = """\
+        <html>
+        <head>
+        </head>
+        <body>
+        <p>Your node <strong><a href="{3}">{5}</a></strong> has changed state from <strong>{1}</strong> to <strong>{2}</strong>.</p>
+        <br>
+        <p><b>Label: </b>{5}<br><b>IP: </b>{4}<br><b>TXID: </b>{0}</p>
+        </body>
+        </html>
+        """.format(
+                html.escape(node.txid),
+                html.escape('' if old == None else old),
+                html.escape('' if node.node_status == None else node.node_ip),
+                'https://' + config['domain'] + '/node/' + str(node.id),
+                html.escape('' if node.node_ip == None else node.node_ip),
+                html.escape('' if node.label == None else node.label)
+            )
+
+        r = requests.post('https://api.mailgun.net/v3/'+config['mailgun_domain']+'/messages',
+                data={
+                    'from': 'noreply@'+config['mailgun_domain'],
+                    'to': userobj.email,
+                    'subject': '{0} from {1} to {2}'.format(node.label, old, node.node_status),
+                    'html': htmlx
+                    },
+                auth=('api', config['mailgun_key'])
+            )
+
+        print(r.status_code)
+        print(r.text)
     except Exception as e:
+        print('I FAILED TO SEND AN EMAIL')
         print(str(e))
-        return
-
-    if userobj.email_last + userobj.email_cooldown >= ut:
-        return
-
-    userobj.email_last = ut
-    userobj.save()
-
-    htmlx = """\
-    <html>
-    <head>
-    </head>
-    <body>
-    <p>Your node <strong><a href="{3}">{5}</a></strong> has changed state from <strong>{1}</strong> to <strong>{2}</strong>.</p>
-    <br>
-    <p><b>Label: </b>{5}<br><b>IP: </b>{4}<br><b>TXID: </b>{0}</p>
-    </body>
-    </html>
-    """.format(
-            html.escape(node.txid),
-            html.escape('' if old == None else old),
-            html.escape('' if node.node_status == None else node.node_ip),
-            'https://' + config['domain'] + '/node/' + str(node.id),
-            html.escape('' if node.node_ip == None else node.node_ip),
-            html.escape('' if node.label == None else node.label)
-        )
-
-    r = requests.post('https://api.mailgun.net/v3/'+config['mailgun_domain']+'/messages',
-            data={
-                'from': 'noreply@'+config['mailgun_domain'],
-                'to': userobj.email,
-                'subject': '{0} from {1} to {2}'.format(node.label, old, node.node_status),
-                'html': htmlx
-                },
-            auth=('api', config['mailgun_key'])
-        )
-
-    print(r.status_code)
-    print(r.text)
+        print(str(node), str(old))
 
 
 def send_pw_rst(email, token):
