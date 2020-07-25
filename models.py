@@ -21,14 +21,18 @@ class Node(BaseModel):
     user = peewee.ForeignKeyField(User, backref='nodes', null=False)
     label = peewee.CharField(null=False)
     txid = peewee.CharField(null=False)
+    node_collat_addr = peewee.CharField(null=True)
     node_status = peewee.CharField(null=True)
-    node_protocol = peewee.IntegerField(null=True)
-    node_payee = peewee.CharField(null=True)
-    node_last_seen = peewee.DateTimeField(null=True)
-    node_active_seconds = peewee.IntegerField(null=True)
+    node_pose_score = peewee.IntegerField(null=True)
+    node_ip = peewee.CharField(null=True)
     node_last_paid_time = peewee.DateTimeField(null=True)
     node_last_paid_block = peewee.IntegerField(null=True)
-    node_ip = peewee.CharField(null=True)
+    node_payout_addr = peewee.CharField(null=True)
+    node_owner_addr = peewee.CharField(null=True)
+    node_voting_addr = peewee.CharField(null=True)
+    node_protx_hash = peewee.CharField(null=True)
+    node_oper_pubkey = peewee.CharField(null=True)
+    node_oper_reward = peewee.CharField(null=True)
 
 if __name__ == '__main__':
     with db:

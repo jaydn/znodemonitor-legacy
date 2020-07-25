@@ -6,6 +6,7 @@
 {% endif %}
 {% endmacro %}
 
+
 {% extends "base.html" %}
 {% block body %}
 <div class="container">
@@ -27,24 +28,24 @@
                                 <td>{{node.txid}}</td>
                             </tr>
                             <tr>
+                                <th>Collateral Address</th>
+                                <td>{{node.node_payout_addr}}</td>
+                            </tr>
+                            <tr>
                                 <th>Status</th>
                                 <td>{{colour_status(node.node_status)}}</td>
                             </tr>
                             <tr>
-                                <th>Protocol</th>
-                                <td>{{node.node_protocol}}</td>
+                                <th>PoSe Score</th>
+                                {% if node.node_pose_score != None %}
+                                    <td><span class="{{node.node_pose_score | colour_pose_score }}">{{node.node_pose_score}}</span></td>
+                                {% else %}
+                                    <td>None</td>
+                                {% endif %}
                             </tr>
                             <tr>
-                                <th>Payee</th>
-                                <td>{{node.node_payee}}</td>
-                            </tr>
-                            <tr>
-                                <th>Last Seen</th>
-                                <td>{{node.node_last_seen | tz_localize}}</td>
-                            </tr>
-                            <tr>
-                                <th>Active</th>
-                                <td>{{node.node_active_seconds | secs_humanize}}</td>
+                                <th>IP</th>
+                                <td>{{node.node_ip}}</td>
                             </tr>
                             <tr>
                                 <th>Last Paid Time</th>
@@ -55,8 +56,28 @@
                                 <td>{{node.node_last_paid_block}}</td>
                             </tr>
                             <tr>
-                                <th>IP</th>
-                                <td>{{node.node_ip}}</td>
+                                <th>Payout Address</th>
+                                <td>{{node.node_payout_addr}}</td>
+                            </tr>
+                            <tr>
+                                <th>Owner Address</th>
+                                <td>{{node.node_owner_addr}}</td>
+                            </tr>
+                            <tr>
+                                <th>Voting Address</th>
+                                <td>{{node.node_voting_addr}}</td>
+                            </tr>
+                            <tr>
+                                <th>Protx Hash</th>
+                                <td>{{node.node_protx_hash}}</td>
+                            </tr>
+                            <tr>
+                                <th>Operator Pubkey</th>
+                                <td>{{node.node_oper_pubkey}}</td>
+                            </tr>
+                            <tr>
+                                <th>Operator Reward</th>
+                                <td>{{node.node_oper_reward}}</td>
                             </tr>
                         </tbody>
                     </table>

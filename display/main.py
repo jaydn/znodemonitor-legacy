@@ -28,10 +28,19 @@ def max_last_paid_for_ten_pct():
     rv = cache.get('max_lastpaid')
     if rv is None:
         blocks = z.get_block_count()
-        obj = z.call('znode', 'list', 'lastpaidblock')
+        obj = z.call('evoznode', 'list', 'lastpaidblock')
         rv = (blocks - int(len(obj) * 0.9))
         cache.set('max_lastpaid', rv, timeout=30 * 60)
     return rv
+
+def amt_enabled_nodes_for_pose_score():
+    rv = cache.get('amt_enabled_nodes')
+    if rv is None:
+        obj = z.call('evoznode', 'count')
+        rv = obj['enabled']
+        cache.set('amt_enabled_nodes', rv, timeout=30 * 60)
+    return rv
+
 
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = config['secret']
@@ -69,6 +78,18 @@ def access_only(usertype):
 @app.context_processor
 def inject_config():
     return {'config': config}
+    
+@app.template_filter('colour_pose_score')
+def colour_pose_score(s):
+    warning_amt = max(66, amt_enabled_nodes_for_pose_score() * 0.66)
+    print(warning_amt)
+    if s == 0:
+        return 'text-success'
+    elif s <= warning_amt:
+        return 'text-warning'
+    else:
+        return 'text-danger'
+
 
 @app.template_filter('tz_localize')
 def tz_localize_filter(s):
@@ -104,8 +125,8 @@ def statistics():
     height = obj.get('blocks', None)
 
     try:
-        obj = z.call('znodelist')
-    except:
+        obj = z.call('evoznodelist', 'status')
+    except Exception as e:
         return flask.render_template('statistics_offline.html', exception_msg=str(e))
 
     nodes = len(obj)
@@ -239,7 +260,7 @@ def login():
     elif flask.request.method == 'GET':
         return flask.render_template('login.html')
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout', methods=['GET', 'POST'])
 @access_only('auth')
 def logout():
     flask.session.pop('UserID', None)

@@ -34,11 +34,11 @@ def send_alert(node, old):
     </html>
     """.format(
             html.escape(node.txid),
-            html.escape(old),
-            html.escape(node.node_status),
+            html.escape('' if old == None else old),
+            html.escape('' if node.node_status == None else node.node_ip),
             'https://' + config['domain'] + '/node/' + str(node.id),
-            html.escape(node.node_ip),
-            html.escape(node.label)
+            html.escape('' if node.node_ip == None else node.node_ip),
+            html.escape('' if node.label == None else node.label)
         )
 
     r = requests.post('https://api.mailgun.net/v3/'+config['mailgun_domain']+'/messages',
