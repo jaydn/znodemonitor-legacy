@@ -112,7 +112,7 @@ def main(should_send_mail):
             if int(old_pose_score) < int(node.node_pose_score):
                 should_alert_pose_score = True
         except Exception as e:
-            print(str(e))
+            pass # for pose scores of none
         
         node.node_ip              = node_result.get('state', {}).get('service', None)
         node.node_last_paid_time  = None if node_result.get('lastpaidtime', 0) == 0 else datetime.datetime.fromtimestamp(int(node_result['lastpaidtime']))
