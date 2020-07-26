@@ -2,51 +2,45 @@ import requests
 import time
 import html
 import os
-
-from models import User
+from models import User, Node
 from znconfig import config
+from jinja2 import Environment, FileSystemLoader
 
+def cooldown_user(userobj):
+    return False
+    ut = int(time.time())
 
-def send_alert(node, old):
+    if userobj.email_last + userobj.email_cooldown >= ut:
+        return True
+
+    userobj.email_last = ut
+    userobj.save()
+
+    return False
+
+templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+env = Environment(loader = FileSystemLoader(templates_dir))
+
+def send_score_increase_alert(node, old_score):
     try:
-        ut = int(time.time())
-
         try:
             userobj = User.select().where((User.id == node.user.id))[0]
         except Exception as e:
             print(str(e))
             return
 
-        if userobj.email_last + userobj.email_cooldown >= ut:
+        if cooldown_user(userobj):
             return
+        
+        template = env.get_template('score_increase_alert.html')
 
-        userobj.email_last = ut
-        userobj.save()
-
-        htmlx = """\
-        <html>
-        <head>
-        </head>
-        <body>
-        <p>Your node <strong><a href="{3}">{5}</a></strong> has changed state from <strong>{1}</strong> to <strong>{2}</strong>.</p>
-        <br>
-        <p><b>Label: </b>{5}<br><b>IP: </b>{4}<br><b>TXID: </b>{0}</p>
-        </body>
-        </html>
-        """.format(
-                html.escape(node.txid),
-                html.escape('' if old == None else old),
-                html.escape('' if node.node_status == None else node.node_ip),
-                'https://' + config['domain'] + '/node/' + str(node.id),
-                html.escape('' if node.node_ip == None else node.node_ip),
-                html.escape('' if node.label == None else node.label)
-            )
+        htmlx = template.render(node=node, old_score=old_score, domain=config['domain'])
 
         r = requests.post('https://api.mailgun.net/v3/'+config['mailgun_domain']+'/messages',
                 data={
                     'from': 'noreply@'+config['mailgun_domain'],
                     'to': userobj.email,
-                    'subject': '{0} from {1} to {2}'.format(node.label, old, node.node_status),
+                    'subject': f'{node.label} increased score to {node.node_pose_score}',
                     'html': htmlx
                     },
                 auth=('api', config['mailgun_key'])
@@ -58,6 +52,45 @@ def send_alert(node, old):
         print('I FAILED TO SEND AN EMAIL')
         print(str(e))
         print(str(node), str(old))
+
+def send_status_change_alert(node, old):
+    try:
+        try:
+            userobj = User.select().where((User.id == node.user.id))[0]
+        except Exception as e:
+            print(str(e))
+            return
+
+        if cooldown_user(userobj):
+            return
+        
+
+        template = env.get_template('status_change_alert.html')
+
+        htmlx = template.render(node=node, old_status=old, domain=config['domain'])
+
+        r = requests.post('https://api.mailgun.net/v3/'+config['mailgun_domain']+'/messages',
+                data={
+                    'from': 'noreply@'+config['mailgun_domain'],
+                    'to': userobj.email,
+                    'subject': f'{node.label} from {old} to {node.node_status}',
+                    'html': htmlx
+                    },
+                auth=('api', config['mailgun_key'])
+            )
+
+        print(r.status_code)
+        print(r.text)
+    except Exception as e:
+        print('I FAILED TO SEND AN EMAIL')
+        print(str(e))
+        print(str(node), str(old))
+
+if __name__ == "__main__":
+    nodeobj = Node.select().where((Node.id == 28))[0]
+    print(nodeobj.label)
+    send_status_change_alert(nodeobj, 'ENABLED')
+    send_score_increase_alert(nodeobj, 9999)
 
 
 def send_pw_rst(email, token):

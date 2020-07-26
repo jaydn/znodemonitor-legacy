@@ -7,7 +7,7 @@ import sys
 import os
 
 sys.path.append(os.path.abspath('..'))
-from sendmail import send_alert
+from sendmail import send_status_change_alert,send_score_increase_alert
 from models import User, Node
 from znconfig import config
 from zcoin import ZCoinAdapter
@@ -67,30 +67,12 @@ def znode_list():
                 print(f"Choked on {k}: {v} ({str(e)})")
                 continue
 
-    
-    #print(combined_list['068e316808d91a6ea4e350d8792d7b87025ded6a48f2a01773332afec76fb5c5, 5'])
-
     return combined_list
-    # for k,v in combined_list.items():
-    #     print(k)
-    #     print('----------')
-    #     print(v)
-    #     print('')
-
-
-
-    
-
-#    b = json.loads(obj)
-#    print(str(b))
-    #return {tx[10:-1]: shlex.split(data) for tx,data in obj.items()}
 
 znode_list()
 
 def is_synced():
     obj = z.call('evoznsync', 'status')
-    #print(obj)
-    #obj = json.loads(subprocess.check_output([config['zcoincli_binary'], 'znsync', 'status']).decode())
     return 'AssetID' in obj and obj['AssetID'] == 999
 
 def main(should_send_mail):
@@ -102,7 +84,8 @@ def main(should_send_mail):
 
     all_nodes = Node.select()
 
-    alerts = []
+    status_alerts = []
+    pose_score_alerts = []
 
     for node in all_nodes:
 #        print(node.txid)
@@ -112,16 +95,25 @@ def main(should_send_mail):
         except:
             node_result = {}
         
-        should_alert = False
+        should_alert_status = False
+        should_alert_pose_score = False
 
         old_status = node.node_status
         if node_result.get('status', 'NOT_ON_LIST') != old_status and old_status != None:
-            should_alert = True
+            should_alert_status = True
 #            print('{2} : {1} -> {0}'.format(node_result[NODE_STATUS], node.node_status, node.user.email))
     
         node.node_collat_addr     = node_result.get('collateralAddress', None)
         node.node_status          = node_result.get('status', 'NOT_ON_LIST')
+        
+        old_pose_score = node.node_pose_score
         node.node_pose_score      = node_result.get('state', {}).get('PoSePenalty', None)
+        try:
+            if int(old_pose_score) < int(node.node_pose_score):
+                should_alert_pose_score = True
+        except Exception as e:
+            print(str(e))
+        
         node.node_ip              = node_result.get('state', {}).get('service', None)
         node.node_last_paid_time  = None if node_result.get('lastpaidtime', 0) == 0 else datetime.datetime.fromtimestamp(int(node_result['lastpaidtime']))
         node.node_last_paid_block = node_result.get('lastpaidblock', None)
@@ -134,17 +126,29 @@ def main(should_send_mail):
         
         node.save()
 
-        if should_alert:
-            alerts.append((node, old_status))
+        if should_alert_status:
+            status_alerts.append((node, old_status))
+        
+        if should_alert_pose_score:
+            pose_score_alerts.append((node, old_pose_score))
 
-    print('Processed {0} nodes, sending {1} emails'.format(len(all_nodes), len(alerts)))
+    print('Processed {0} nodes, sending {1} emails'.format(len(all_nodes), len(status_alerts) + len(pose_score_alerts)))
 
-    for alert in alerts:
+    for alert in status_alerts:
         if should_send_mail:
-            send_alert(*alert)
+            send_status_change_alert(*alert)
         else:
             print('would send mail')
         print(*alert)
+
+    for alert in status_alerts:
+        if should_send_mail:
+            send_score_increase_alert(*alert)
+        else:
+            print('would send mail')
+        print(*alert)
+
+
 
 
 
@@ -160,10 +164,9 @@ if __name__ == '__main__':
 
 
     while True:
-        print('starting loop' + str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y-%m-%d %H:%M:%S')))
+        print('starting loop ' + str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y-%m-%d %H:%M:%S')))
         main(send_mail)
-        print('ending loop' + str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y-%m-%d %H:%M:%S')))
+        print('ending loop ' + str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y-%m-%d %H:%M:%S')))
         if cron_mode:
             break
-        time.sleep(30)
 
