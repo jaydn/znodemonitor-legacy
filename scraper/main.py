@@ -129,7 +129,7 @@ def main(should_send_mail):
         if should_alert_status:
             status_alerts.append((node, old_status))
         
-        if should_alert_pose_score:
+        if should_alert_pose_score and not should_alert_status:
             pose_score_alerts.append((node, old_pose_score))
 
     print('Processed {0} nodes, sending {1} emails'.format(len(all_nodes), len(status_alerts) + len(pose_score_alerts)))
@@ -141,7 +141,7 @@ def main(should_send_mail):
             print('would send mail')
         print(*alert)
 
-    for alert in status_alerts:
+    for alert in pose_score_alerts:
         if should_send_mail:
             send_score_increase_alert(*alert)
         else:

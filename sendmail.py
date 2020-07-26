@@ -7,7 +7,6 @@ from znconfig import config
 from jinja2 import Environment, FileSystemLoader
 
 def cooldown_user(userobj):
-    return False
     ut = int(time.time())
 
     if userobj.email_last + userobj.email_cooldown >= ut:
