@@ -8,7 +8,7 @@ import os
 
 sys.path.append(os.path.abspath('..'))
 from sendmail import send_status_change_alert,send_score_increase_alert
-from models import User, Node
+from models import User, Node, State
 from znconfig import config
 from zcoin import ZCoinAdapter
 
@@ -161,12 +161,15 @@ if __name__ == '__main__':
         if arg == 'cron_mode':
             cron_mode = True
 
-
-
     while True:
         print('starting loop ' + str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y-%m-%d %H:%M:%S')))
         main(send_mail)
         print('ending loop ' + str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y-%m-%d %H:%M:%S')))
+
+        last = State.select().where(State.key == 'last_updated').first()
+        last.value = int(time.time())
+        last.save()
+            
         if cron_mode:
             break
 
