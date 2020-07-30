@@ -17,7 +17,7 @@ import re
 
 sys.path.append(os.path.abspath('..'))
 from sendmail import send_pw_rst
-from models import User, Node, db
+from models import User, Node, db, State
 from znconfig import config
 from zcoin import ZCoinAdapter
 
@@ -104,7 +104,7 @@ def tz_localize_filter(s):
 @app.template_filter('secs_humanize')
 def secs_humanize_filter(s):
     try:
-        return '{0.days}d {0.hours}h'.format(dateutil.relativedelta.relativedelta(seconds=s))
+        return '{0.days}d {0.hours}h {0.minutes}m'.format(dateutil.relativedelta.relativedelta(seconds=s))
     except:
         return ''
 
@@ -312,10 +312,11 @@ def overview():
         else:
             attention = attention + 1
 
+    last_upd = State.select().where(State.key == 'last_updated').first().value
+    secs_since_last_upd = int(time.time()) - int(last_upd)
 
 
-
-    return flask.render_template('overview.html', nodes=nodelist, enabled=enabled, attention=attention)
+    return flask.render_template('overview.html', nodes=nodelist, enabled=enabled, attention=attention, last_upd=secs_since_last_upd)
 
 @app.route('/settings', methods=['GET', 'POST'])
 @access_only('auth')

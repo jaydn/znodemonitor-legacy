@@ -1,4 +1,5 @@
 from znconfig import config
+import time
 import peewee
 
 db = peewee.MySQLDatabase(config['database_name'], **config['database_kvargs'])
@@ -34,6 +35,11 @@ class Node(BaseModel):
     node_oper_pubkey = peewee.CharField(null=True)
     node_oper_reward = peewee.CharField(null=True)
 
+class State(BaseModel):
+    key = peewee.CharField(null=False)
+    value = peewee.CharField()
+
 if __name__ == '__main__':
     with db:
-        db.create_tables([User, Node])
+        db.create_tables([User, Node, State])
+        State.create(key='last_updated', value=int(time.time())).save()
