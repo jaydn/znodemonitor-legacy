@@ -11,7 +11,7 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-6 col-md-3 mb-4">
-            <div class="card bg-secondary text-white">
+            <div class="card">
                 <div class="card-header">
                     <strong class="text-success">Enabled</strong>
                 </div>
@@ -21,7 +21,7 @@
             </div>
         </div>
         <div class="col-sm-6 col-md-3 mb-4">
-            <div class="card bg-secondary text-white">
+            <div class="card">
                 <div class="card-header">
                     <strong class="text-danger">Requiring Attention</strong>
                 </div>
@@ -32,9 +32,9 @@
         </div>
         {% if last_upd > 300 %}
         <div class="col-sm-12 col-md-3 mb-4">
-            <div class="card bg-danger text-white">
+            <div class="card">
                 <div class="card-header">
-                    <strong class="text-white">Last Database Update</strong>
+                    <strong class="text-danger">Last Database Update</strong>
                 </div>
                 <div class="card-body">
                 {{last_upd | secs_humanize}}
@@ -45,11 +45,11 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <div class="card bg-secondary text-white" style="overflow:auto;">
+            <div class="card" style="overflow:auto;">
                 <div class="card-header">
                     <strong>Node State</strong>
                 </div>
-                <table class="table table-dark table-sm table-striped text-white" id="overview-tbl">
+                <table class="table table-sm table-striped" id="overview-tbl">
                     <thead class="text-center">
                         <tr>
                             <th>Label</th>

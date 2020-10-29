@@ -16,7 +16,7 @@
                 </p>
             </div>
             {% endif %}
-            <div class="card bg-secondary text-white">
+            <div class="card">
                 <div class="card-header">
                     <strong>Login</strong>
                 </div>
@@ -30,8 +30,8 @@
                             <label for="password">Password</label>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
-                        <a href="{{url_for('forgot')}}" class="text-white">Forgot your password?</a><br><br>
-                        <button type="submit" class="btn btn-default">Login</button>
+                        <a href="{{url_for('forgot')}}">Forgot your password?</a><br><br>
+                        <button type="submit" class="btn btn-primary">Login</button>
                     </form>
                 </div>
             </div>
